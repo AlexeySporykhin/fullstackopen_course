@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from 'axios';
+import personsService from './services/persons'
 
 const Filter = ({ filterSubstring, handleFilterInput }) => {
   return (
@@ -57,14 +57,11 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [filterSubstring, setFilterSubstring] = useState("");
-  
+
   useEffect(() => {
-  axios
-    .get('http://localhost:3001/persons')
-    .then(response => {
-      setPersons(response.data)
-    })
-}, []);
+    personsService.getAll().then((initialPersons)=> setPersons(initialPersons));
+  }, []);
+
   const handleFilterInput = (event) => {
     setFilterSubstring(event.target.value);
   };
@@ -95,10 +92,13 @@ const App = () => {
       alert(`${newName} is already in the phonebook`);
       return;
     }
-    const upd_persons = persons.concat(person);
-    setPersons(upd_persons);
-    setNewName("");
-    setNewPhone("");
+
+    personsService.createPerson(person).then((returnedPerson) => {
+      const upd_persons = persons.concat(returnedPerson);
+      setPersons(upd_persons);
+      setNewName("");
+      setNewPhone("");
+    });
   };
 
   return (
