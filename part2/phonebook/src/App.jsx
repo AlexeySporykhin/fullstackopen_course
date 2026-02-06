@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import personsService from "./services/persons";
+import {SuccessNotification, ErrorNotification} from "./components/Notification";
 
 const Filter = ({ filterSubstring, handleFilterInput }) => {
   return (
@@ -62,6 +63,8 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [filterSubstring, setFilterSubstring] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     personsService
@@ -95,7 +98,9 @@ const App = () => {
       number: newPhone,
     };
 
-    const ExistedPerson = persons.find((p) => p.name.trim() === person.name.trim());
+    const ExistedPerson = persons.find(
+      (p) => p.name.trim() === person.name.trim(),
+    );
     if (ExistedPerson) {
       if (
         window.confirm(
@@ -103,13 +108,22 @@ const App = () => {
         )
       ) {
         const changedPerson = { ...ExistedPerson, number: person.number };
-        personsService.updatePerson(changedPerson).then((updatedPerson) => {
-          setPersons(
-            persons.map((person) =>
-              person.id === updatedPerson.id ? updatedPerson : person,
-            ),
-          );
-        });
+        personsService
+          .updatePerson(changedPerson)
+          .then((updatedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id === updatedPerson.id ? updatedPerson : person,
+              ),
+            );
+            setSuccessMessage(`Changed ${updatedPerson.name}'s number `);
+            setTimeout(() => setSuccessMessage(""), 5000);
+          })
+          .catch((error) => {
+            setErrorMessage(`Information of ${changedPerson.name} has already been removed from server`);
+            setTimeout(() => setErrorMessage(''), 5000);
+            setPersons(persons.filter(p => p.id !==changedPerson.id));
+          });
       }
       return;
     }
@@ -119,6 +133,8 @@ const App = () => {
       setPersons(upd_persons);
       setNewName("");
       setNewPhone("");
+      setSuccessMessage(`Added ${returnedPerson.name}`);
+      setTimeout(() => setSuccessMessage(""), 5000);
     });
   };
 
@@ -136,6 +152,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <SuccessNotification message={successMessage} />
+      <ErrorNotification message={errorMessage} />
       <Filter
         filterSubstring={filterSubstring}
         handleFilterInput={handleFilterInput}
