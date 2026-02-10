@@ -26,9 +26,9 @@ const CountriesList = ({ countries, onShow }) => {
 const CountryCard = ({ country }) => {
   const [weather, setWeather] = useState(null);
   useEffect(() => {
-      weatherService
-        .getWeather(country.capital[0])
-        .then((data) => setWeather(data));
+    weatherService
+      .getWeather(country.capital[0])
+      .then((data) => setWeather(data));
   }, [country]);
 
   const capital = country.capital[0];
@@ -49,7 +49,7 @@ const CountryCard = ({ country }) => {
       <h2>Weather in {capital}</h2>
       {weather && (
         <>
-          <p>Temperature {(weather.main.temp - 273.15).toFixed(1)} Celsius</p>
+          <p>Temperature {weather.main.temp} Celsius</p>
           <img
             src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
             alt={weather.weather[0].description}
@@ -92,20 +92,17 @@ const App = () => {
       <FilterField input={inputSearch} onChange={handleInput} />
       {country ? (
         <CountryCard country={country} />
-      ) : !inputSearch ? (
-        <div></div>
-      ) : filteredCountries.length > 10 ? (
-        <div>Too many matches, specify another filter</div>
-      ) : filteredCountries.length > 1 ? (
-        <CountriesList
-          countries={filteredCountries}
-          onShow={handleShowCountry}
-        />
-      ) : filteredCountries.length === 1 ? (
-        <CountryCard country={filteredCountries[0]} />
-      ) : (
-        <div></div>
-      )}
+      ) : !inputSearch ? null
+        : filteredCountries.length > 10 ? (
+          <div>Too many matches, specify another filter</div>
+        ) : filteredCountries.length > 1 ? (
+          <CountriesList
+            countries={filteredCountries}
+            onShow={handleShowCountry}
+          />
+        ) : filteredCountries.length === 1 ? (
+          <CountryCard country={filteredCountries[0]} />
+        ) : null}
     </div>
   );
 };
