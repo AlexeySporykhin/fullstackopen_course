@@ -64,8 +64,6 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    // console.log(request);
-    console.log(body.name);
     if (!body.name) {
         return response.status(400).json({
             error: 'name is missing'
