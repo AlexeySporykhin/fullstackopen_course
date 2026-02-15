@@ -4,7 +4,7 @@ Content-Type: application/json
 
 
 ### get id 
-GET  http://localhost:3001/api/persons/698ef11843bc2ff3dc4c6b60adsa
+GET  http://localhost:3001/api/persons/69918c8f5df4710848a9d822
 Content-Type: application/json
 
 ### post
@@ -13,7 +13,7 @@ Content-Type: application/json
 
 {
     "name": "Alex test2",
-    "number": 12345
+    "number": 1234567
 }
 
 ### delete
@@ -24,3 +24,14 @@ Content-Type: application/json
     "name": "Alex test2",
     "number": 12345
 }
+### put
+PUT http://localhost:3001/api/persons/69918e811f0793cb36eb30d9
+Content-Type: application/json
+
+{
+    "name": "Alex test2",
+    "number": 1
+}
+### get info
+GET  http://localhost:3001/info
+Content-Type: application/json
