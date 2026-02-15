@@ -29,19 +29,27 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
     request.requestTime = new Date().toString()
-    console.log(request.requestTime)
-    response.send(`<p>Phonebook has info for ${persons.length} people </p>
+    Person.countDocuments({})
+        .then(count => {
+            response.send(`<p>Phonebook has info for ${count} people </p>
         <p>${request.requestTime}</p>
         `)
+        })
+        .catch(err => next(err))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
     const id = request.params.id
     Person.findById(id)
         .then(person => {
-            response.json(person)
+            if (person) {
+                response.json(person)
+            } else {
+                response.status(404).end()
+            }
+
         })
         .catch(err => next(err))
 })
@@ -75,6 +83,25 @@ app.post('/api/persons', (request, response) => {
     person.save().then(savedPerson => {
         response.json(savedPerson)
     })
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const { name, number } = request.body;
+
+    Person.findById(request.params.id)
+        .then(person => {
+            if (!person) {
+                return response.status(400).end()
+            }
+
+            person.name = name
+            person.number = number
+
+            return person.save().then(updatedPerson => {
+                response.json(updatedPerson)
+            })
+        })
+        .catch(err => next(err))
 })
 
 const unknownEndpoint = (request, response) => {
