@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import personsService from "./services/persons";
-import {SuccessNotification, ErrorNotification} from "./components/Notification";
+import {
+  SuccessNotification,
+  ErrorNotification,
+} from "./components/Notification";
 
 const Filter = ({ filterSubstring, handleFilterInput }) => {
   return (
@@ -120,22 +123,28 @@ const App = () => {
             setTimeout(() => setSuccessMessage(""), 5000);
           })
           .catch((error) => {
-            setErrorMessage(`Information of ${changedPerson.name} has already been removed from server`);
-            setTimeout(() => setErrorMessage(''), 5000);
-            setPersons(persons.filter(p => p.id !==changedPerson.id));
+            setErrorMessage(error.response.data.error);
+            setTimeout(() => setErrorMessage(""), 5000);
+            // setPersons(persons.filter((p) => p.id !== changedPerson.id));
           });
       }
       return;
     }
 
-    personsService.createPerson(person).then((returnedPerson) => {
-      const upd_persons = persons.concat(returnedPerson);
-      setPersons(upd_persons);
-      setNewName("");
-      setNewPhone("");
-      setSuccessMessage(`Added ${returnedPerson.name}`);
-      setTimeout(() => setSuccessMessage(""), 5000);
-    });
+    personsService
+      .createPerson(person)
+      .then((returnedPerson) => {
+        const upd_persons = persons.concat(returnedPerson);
+        setPersons(upd_persons);
+        setNewName("");
+        setNewPhone("");
+        setSuccessMessage(`Added ${returnedPerson.name}`);
+        setTimeout(() => setSuccessMessage(""), 5000);
+      })
+      .catch((error) => {
+        setErrorMessage(error.response.data.error);
+        setTimeout(() => setErrorMessage(""), 5000);
+      });
   };
 
   const handleDelete = (person) => {
