@@ -12,12 +12,12 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Alex test2",
-    "number": 1234567
+    "name": "abcdef",
+    "number": "040-22334455"
 }
 
 ### delete
-DELETE http://localhost:3001/api/persons/6991595e4a7f488bcbeef832
+DELETE http://localhost:3001/api/persons/699205686cbcfa28ed48f6f4
 Content-Type: application/json
 
 {
@@ -25,12 +25,12 @@ Content-Type: application/json
     "number": 12345
 }
 ### put
-PUT http://localhost:3001/api/persons/69918e811f0793cb36eb30d9
+PUT http://localhost:3001/api/persons/698ef11843bc2ff3dc4c6b60
 Content-Type: application/json
 
 {
-    "name": "Alex test2",
-    "number": 1
+    "name": "abcdef",
+    "number": "10-22-334455"
 }
 ### get info
 GET  http://localhost:3001/info
