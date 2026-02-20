@@ -39,6 +39,35 @@ test('all blogs are returned', async () => {
     assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
+test('id field is defined', async () => {
+    const response = await api.get('/api/blogs')
+    const blogs = response.body
+    blogs.forEach(blog => {
+        assert(blog.id)
+    })
+})
+
+test('a valid blog can be added', async () => {
+    const newBlog = {
+        title: 'New blog',  
+        author: 'Alice Johnson',
+        url: 'http://example.com/new-blog',
+        likes: 3
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    assert.strictEqual(response.body.length, initialBlogs.length + 1)
+
+    const titles = response.body.map(blog => blog.title)
+    assert(titles.includes(newBlog.title))
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
