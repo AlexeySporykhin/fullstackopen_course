@@ -5,12 +5,13 @@ Content-Type: application/json
 ### post
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFsZXhzcCIsImlkIjoiNjk5ZDczZGJlZjVkYjRiYzFhMWNlMDAwIiwiaWF0IjoxNzcxOTMwMzU1fQ.65X6G_PQ1g7Qelw6Vh2CmLN2w1q_OnQgvH68BbMhjmg
 
 {
-    "title": "new blog 1",
-  "author": "Avrely",
-  "url": "some url 4",
-  "likes": 15
+    "title": "new blog by alex",
+  "author": "alex",
+  "url": "url",
+  "likes": 0
 }
 
 ### get all users
