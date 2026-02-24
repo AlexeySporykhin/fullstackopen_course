@@ -191,7 +191,7 @@ describe('when there is initially one user in db', () => {
 
     test('creation fails with proper statuscode and message if username already taken', async () => {
         const usersAtStart = await helper.usersInDb()
-        
+
         const newUser = {
             username: 'root',
             name: 'Superuser',
@@ -207,6 +207,46 @@ describe('when there is initially one user in db', () => {
         const usersAtEnd = await helper.usersInDb()
         assert(result.body.error.includes('expected `username` to be unique'))
 
+        assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+    })
+
+    test('creation fails with proper statuscode and message if username is less than 3 characters', async () => {
+        const usersAtStart = await helper.usersInDb()
+        
+        const newUser = {
+            username: 'te',
+            name: 'new users',
+            password: 'salainen',
+        }
+
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        const usersAtEnd = await helper.usersInDb()
+        assert(result.body.error.includes("User validation failed: username: Path `username` (`te`, length 2) is shorter than the minimum allowed length (3)."))
+        assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+    })
+
+    test('creation fails with proper statuscode and message if passwords is less than 3 characters', async () => {
+        const usersAtStart = await helper.usersInDb()
+        
+        const newUser = {
+            username: 'test',
+            name: 'new user',
+            password: 's',
+        }
+
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        const usersAtEnd = await helper.usersInDb()  
+        assert(result.body.error.includes('password must be at least 3 characters long'))      
         assert.strictEqual(usersAtEnd.length, usersAtStart.length)
     })
 })
