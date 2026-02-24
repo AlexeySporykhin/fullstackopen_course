@@ -12,3 +12,18 @@ Content-Type: application/json
   "url": "some url 4",
   "likes": 15
 }
+
+### get all users
+GET   http://localhost:3003/api/users/
+Content-Type: application/json
+
+
+### create a new user
+post   http://localhost:3003/api/users/
+Content-Type: application/json
+
+{
+  "username": "alexsp 2",
+  "name": "Alexey Sp",
+  "password": "testtest"
+}
