@@ -58,3 +58,6 @@ pnpm-debug.log*
 
 # test part
 # test_part/
+
+tutorial/
+**/tutorial/
