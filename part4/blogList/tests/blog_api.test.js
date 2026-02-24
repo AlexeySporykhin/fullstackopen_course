@@ -251,6 +251,48 @@ describe('when there is initially one user in db', () => {
     })
 })
 
+describe('deleting a blog with authentication validation', () => {
+    test('succeeds with status code 204 if id is valid and user is authenticated', async () => {
+        const newUser = {
+            username: 'alexsp',
+            name: 'Alex Sp',
+            password: 'testtest',
+        }
+
+        await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(201)
+
+        const loginResponse = await api
+            .post('/api/login')
+            .send({ username: newUser.username, password: newUser.password })
+            .expect(200)
+
+        const token = loginResponse.body.token
+
+        const newBlog = {
+            title: 'Blog to be deleted',
+            author: 'Test Author',
+            url: 'http://test.com',
+            likes: 0,
+        }
+
+        const blogResponse = await api
+            .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
+            .send(newBlog)
+            .expect(201)
+
+        const blogToDelete = blogResponse.body
+
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .expect(204)
+    })
+})
+
 after(async () => {
     await mongoose.connection.close()
 })

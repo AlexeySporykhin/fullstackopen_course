@@ -28,3 +28,7 @@ Content-Type: application/json
   "name": "Alexey",
   "password": "testtest"
 }
+
+### delete a blog
+delete http://localhost:3003/api/blogs/699da3f7a48def156a4d1d5c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFsZXhzcCIsImlkIjoiNjk5ZDczZGJlZjVkYjRiYzFhMWNlMDAwIiwiaWF0IjoxNzcxOTQ2MTg4fQ.Yl-E9VuwqBGRgZCn6uK1oKukjVLJx3zJJzliYYd0Kz
