@@ -8,7 +8,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFsZXhzcCIsImlkIjoiNjk5ZDczZGJlZjVkYjRiYzFhMWNlMDAwIiwiaWF0IjoxNzcxOTQ4OTU3fQ.Z7pJfUWnGkYwDr-NApy6tNJ6yUG9DTZW4pYaNt8xSZo
 
 {
-    "title": "new blog by alex",
+    "title": "new blog by alex2",
   "author": "alex",
   "url": "http://exp.com",
   "likes": 0
@@ -30,5 +30,5 @@ Content-Type: application/json
 }
 
 ### delete a blog
-delete http://localhost:3003/api/blogs/699decf97dd6fcb2752a28fd
+delete http://localhost:3003/api/blogs/699e7c72943e8c63b9800e80
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFsZXhzcCIsImlkIjoiNjk5ZDczZGJlZjVkYjRiYzFhMWNlMDAwIiwiaWF0IjoxNzcxOTQ4OTU3fQ.Z7pJfUWnGkYwDr-NApy6tNJ6yUG9DTZW4pYaNt8xSZo
