@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import {ErrorNotification, SuccessNotification} from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,6 +12,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -38,17 +41,20 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-    } catch (e) {
-      console.log(e)
-      // setErrorMessage('wrong credentials')
-      // setTimeout(() => {
-      //   setErrorMessage(null)
-      // }, 5000)
+      setMessage(`${user.name} successfully logged`);
+      setTimeout(() => setMessage(null) , 5000);
+    } catch {
+      setErrorMessage('wrong username or password')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
   }
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedNoteappUser');
+    setMessage(`${user.name} successfully logouted`);
+    setTimeout(()=> setMessage(null), 5000);
     blogService.setToken(null);
     setUser(null);
   }
@@ -83,6 +89,8 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <SuccessNotification message={message} />
+        <ErrorNotification message={errorMessage} />
         {loginForm()}
       </div>
     )
@@ -100,6 +108,8 @@ const App = () => {
     setAuthor('');
     setTitle('');
     setUrl('');
+    setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`);
+    setTimeout(() => setMessage(null), 5000);
   }
 
   const blogForm = () => (
@@ -141,6 +151,8 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <SuccessNotification message={message} />
+      <ErrorNotification message={errorMessage} />
       <div>{user.name} logged in
         <button onClick={handleLogout}> logout </button>
       </div>
