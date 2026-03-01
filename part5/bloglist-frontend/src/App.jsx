@@ -14,6 +14,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [message, setMessage] = useState(null);
 
+
   const blogFormRef = useRef();
 
   useEffect(() => {
@@ -97,12 +98,24 @@ const App = () => {
     )
   }
 
-  const addBlog = async blogObject => {        
+  const addBlog = async blogObject => {
     blogFormRef.current.toggleVisibility();
     const returnedBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(returnedBlog))
     setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`);
     setTimeout(() => setMessage(null), 5000);
+  }
+
+  const updateBlog = async (id, blogObject) => {
+    setBlogs(blogs.map(b => b.id === id ? {...b, likes: b.likes + 1}: b))
+    try {
+      const returnedBlog = await blogService.update(id, blogObject)
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+    } catch {
+      setBlogs(blogs)
+      setMessage('User invalid. User must be creator of the blog');
+      setTimeout(() => setMessage(null), 5000);
+    }
   }
 
   return (
@@ -114,13 +127,13 @@ const App = () => {
         <button onClick={handleLogout}> logout </button>
       </div>
       <h2>create new </h2>
-      <Togglable buttonLabel='create new blog' ref = {blogFormRef}>
-        <BlogForm          
+      <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+        <BlogForm
           createBlog={addBlog}
         />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
     </div>
   )
