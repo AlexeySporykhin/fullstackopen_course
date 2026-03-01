@@ -117,6 +117,17 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async id => {
+    try {
+      await blogService.deleteBlog(id)
+      setBlogs(blogs.filter(blog => blog.id !== id))
+    } catch {
+      setBlogs(blogs)
+      setMessage('User invalid. User must be creator of the blog');
+      setTimeout(() => setMessage(null), 5000);
+    }
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -132,7 +143,7 @@ const App = () => {
         />
       </Togglable>
       {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user}/>
       )}
     </div>
   )
