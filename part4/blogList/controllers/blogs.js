@@ -58,7 +58,6 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
 
 blogsRouter.put('/:id', userExtractor, async (request, response) => {
   const user = request.user
-  console.log('user', user)
   if (!user) {
     return response.status(400).json({ error: 'UserId missing or not valid' })
   }

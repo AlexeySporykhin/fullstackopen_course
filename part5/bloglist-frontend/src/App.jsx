@@ -101,16 +101,15 @@ const App = () => {
   const addBlog = async blogObject => {
     blogFormRef.current.toggleVisibility();
     const returnedBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(returnedBlog))
+    setBlogs(blogs.concat({...returnedBlog, user: user}))
     setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`);
     setTimeout(() => setMessage(null), 5000);
   }
 
   const updateBlog = async (id, blogObject) => {
-    setBlogs(blogs.map(b => b.id === id ? {...b, likes: b.likes + 1}: b))
     try {
       const returnedBlog = await blogService.update(id, blogObject)
-      setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : {...returnedBlog, user: blog.user} ))
     } catch {
       setBlogs(blogs)
       setMessage('User invalid. User must be creator of the blog');
