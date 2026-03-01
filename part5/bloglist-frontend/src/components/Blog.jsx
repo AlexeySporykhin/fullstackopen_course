@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
-  const [detailsVisible, setDetailsVisible] = useState(false);
+  const [detailsVisible, setDetailsVisible] = useState(false)
 
   const showWhenVisible = { display: detailsVisible ? '' : 'none' }
 
@@ -14,12 +14,12 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
       ...blog,
       likes: blog.likes + 1
     }
-    updateBlog(blog.id, updatedBlog);
+    updateBlog(blog.id, updatedBlog)
   }
 
   const handleRemove = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      deleteBlog(blog.id);
+      deleteBlog(blog.id)
     }
   }
 
@@ -31,8 +31,8 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
       </div>
       <div>{blog.user && blog.user.name}</div>
       {/* {console.log('blog.user:', blog.user, 'user:', user)} */}
-      {blog.user && blog.user.username === user.username 
-      && <div><button onClick={handleRemove}>remove</button></div>}    
+      {blog.user && blog.user.username === user.username
+      && <div><button onClick={handleRemove}>remove</button></div>}
     </div>
   )
 

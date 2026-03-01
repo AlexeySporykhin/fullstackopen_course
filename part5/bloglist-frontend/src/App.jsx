@@ -11,11 +11,11 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [message, setMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
 
 
-  const blogFormRef = useRef();
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -43,8 +43,8 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setMessage(`${user.name} successfully logged`);
-      setTimeout(() => setMessage(null), 5000);
+      setMessage(`${user.name} successfully logged`)
+      setTimeout(() => setMessage(null), 5000)
     } catch {
       setErrorMessage('wrong username or password')
       setTimeout(() => {
@@ -54,11 +54,11 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedNoteappUser');
-    setMessage(`${user.name} successfully logouted`);
-    setTimeout(() => setMessage(null), 5000);
-    blogService.setToken(null);
-    setUser(null);
+    window.localStorage.removeItem('loggedNoteappUser')
+    setMessage(`${user.name} successfully logouted`)
+    setTimeout(() => setMessage(null), 5000)
+    blogService.setToken(null)
+    setUser(null)
   }
 
   const loginForm = () => (
@@ -99,21 +99,21 @@ const App = () => {
   }
 
   const addBlog = async blogObject => {
-    blogFormRef.current.toggleVisibility();
+    blogFormRef.current.toggleVisibility()
     const returnedBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat({...returnedBlog, user: user}))
-    setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`);
-    setTimeout(() => setMessage(null), 5000);
+    setBlogs(blogs.concat({ ...returnedBlog, user: user }))
+    setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+    setTimeout(() => setMessage(null), 5000)
   }
 
   const updateBlog = async (id, blogObject) => {
     try {
       const returnedBlog = await blogService.update(id, blogObject)
-      setBlogs(blogs.map(blog => blog.id !== id ? blog : {...returnedBlog, user: blog.user} ))
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : { ...returnedBlog, user: blog.user }))
     } catch {
       setBlogs(blogs)
-      setMessage('User invalid. User must be creator of the blog');
-      setTimeout(() => setMessage(null), 5000);
+      setMessage('User invalid. User must be creator of the blog')
+      setTimeout(() => setMessage(null), 5000)
     }
   }
 
@@ -123,8 +123,8 @@ const App = () => {
       setBlogs(blogs.filter(blog => blog.id !== id))
     } catch {
       setBlogs(blogs)
-      setMessage('User invalid. User must be creator of the blog');
-      setTimeout(() => setMessage(null), 5000);
+      setMessage('User invalid. User must be creator of the blog')
+      setTimeout(() => setMessage(null), 5000)
     }
   }
 
@@ -143,7 +143,7 @@ const App = () => {
         />
       </Togglable>
       {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user}/>
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} />
       )}
     </div>
   )
