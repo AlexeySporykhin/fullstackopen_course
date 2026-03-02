@@ -59,3 +59,26 @@ describe('clicking the button view displays the url and likes', () => {
     expect(element).toBeVisible()
   })
 })
+
+describe('clicking the likes button', () => {
+
+  test('if likes clicked twice the hadler will also be executed twice', async () => {
+    const blog = {
+      title: 'test title',
+      author: 'test author',
+      likes: 5,
+      url: 'url-test.com'
+    }
+
+    const mockHandler = vi.fn()
+
+    render(<Blog blog={blog} updateBlog={mockHandler} />)
+    const user = userEvent.setup()
+    const button = screen.getByText('like')
+    await user.click(button)
+    await user.click(button)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+
+  })
+})
