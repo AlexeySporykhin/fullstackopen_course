@@ -25,14 +25,13 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
 
   const blogDetails = () => (
     <div>
-      <div>{blog.url}</div>
-      <div>likes {blog.likes}
+      <div >{blog.url}</div>
+      <div >likes {blog.likes}
         <button onClick={handleLike}>like</button>
       </div>
       <div>{blog.user && blog.user.name}</div>
-      {/* {console.log('blog.user:', blog.user, 'user:', user)} */}
       {blog.user && blog.user.username === user.username
-      && <div><button onClick={handleRemove}>remove</button></div>}
+        && <div><button onClick={handleRemove}>remove</button></div>}
     </div>
   )
 
@@ -45,10 +44,10 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   }
   return (
     <div style={blogStyle}>
-      <div>
+      <div className='blogTitle'>
         {blog.title} {blog.author}
         <button onClick={toggleVisibility}>{detailsVisible ? 'hide' : 'view'}</button>
-        <div style={showWhenVisible}>
+        <div className='blogDetails' style={showWhenVisible}>
           {blogDetails()}
         </div>
       </div>
