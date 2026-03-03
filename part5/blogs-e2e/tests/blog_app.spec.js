@@ -18,7 +18,7 @@ describe('Blog app', () => {
     await expect(page.getByLabel('username')).toBeVisible()
     await expect(page.getByLabel('password')).toBeVisible()
     await expect(page.getByRole('button', { name: 'login' })).toBeVisible()
-  })    
+  })
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
@@ -37,5 +37,22 @@ describe('Blog app', () => {
       await expect(page.getByText('Wrong username or password')).toBeVisible()
     })
   })
-})
 
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByLabel('username').fill('alexsp')
+      await page.getByLabel('password').fill('test')
+      await page.getByRole('button', { name: 'login' }).click()
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'new blog' }).click()
+      await page.getByLabel('title').fill('Test title')
+      await page.getByLabel('author').fill('Test author')
+      await page.getByLabel('url').fill('http://test.com')
+      await page.getByRole('button', { name: 'create' }).click()
+
+      await expect(page.getByText('Test title Test author')).toBeVisible()
+    })
+  })
+})
