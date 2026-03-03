@@ -71,12 +71,29 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'view' }).click()
       page.on('dialog', async dialog => {
         expect(dialog.type()).toBe('confirm');
-        expect(dialog.message()).toContain('Remove blog Test title by Test author?'); // Optional: Assert the message
+        expect(dialog.message()).toContain('Remove blog Test title by Test author?');
         await dialog.accept(); // Click 'OK'
       });
 
       await page.getByRole('button', { name: 'remove' }).click()
       await expect(page.getByText('Test title Test author')).not.toBeVisible()
+    })
+
+    test('it cannot be removed by another user', async ({ page, request }) => {
+      await request.post('/api/users', {
+        data: {
+          username: 'otheruser',
+          name: 'Other User',
+          password: 'test'
+        }
+      })
+
+      await page.getByRole('button', { name: 'logout' }).click()
+      await loginWith(page, 'otheruser', 'test')
+      await expect(page.getByText('Other User logged in')).toBeVisible()
+
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
     })
   })
 })
