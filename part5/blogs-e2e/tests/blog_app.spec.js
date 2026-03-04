@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const { loginWith, createBlog } = require('./helper')
+const { loginWith, createBlog, likeNewBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -95,5 +95,42 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'view' }).click()
       await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
     })
+  })
+
+  test('blogs are ordered according to likes', async ({ page }) => {
+    await loginWith(page, 'alexsp', 'test');
+    await createBlog(page, {
+      title: 'First blog',
+      author: 'Author One',
+      url: 'http://firstblog.com'
+    })
+    await createBlog(page, {
+      title: 'Second blog',
+      author: 'Author Two',
+      url: 'http://secondblog.com'
+    })
+    await createBlog(page, {
+      title: 'Third blog',
+      author: 'Author Three',
+      url: 'http://thirdblog.com'
+    })
+
+    const blogElements = page.getByTestId('blog')
+
+    const firstBlogBefore = await blogElements.filter({ hasText: 'First blog Author One' })
+    const secondBlogBefore = await blogElements.filter({ hasText: 'Second blog Author Two' })
+    const thirdBlogBefore = await blogElements.filter({ hasText: 'Third blog Author Three' })
+    
+    await likeNewBlog(firstBlogBefore, 1)
+    await likeNewBlog(secondBlogBefore, 3)
+    await likeNewBlog(thirdBlogBefore, 2)
+
+    const firstBlog = await blogElements.nth(0).innerText()
+    const secondBlog = await blogElements.nth(1).innerText()
+    const thirdBlog = await blogElements.nth(2).innerText()
+
+    expect(firstBlog).toContain('Second blog Author Two')
+    expect(secondBlog).toContain('Third blog Author Three')
+    expect(thirdBlog).toContain('First blog Author One')
   })
 })
