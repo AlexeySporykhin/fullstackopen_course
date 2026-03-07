@@ -16,11 +16,28 @@ export const createAnecdote = async (newAnecdote) => {
         },
         body: JSON.stringify(newAnecdote)
     }
-    
-    const response = await fetch(baseUrl, options)  
+
+    const response = await fetch(baseUrl, options)
 
     if (!response.ok) {
         throw new Error('Failed to create anecdote')
+    }
+    return await response.json()
+}
+
+export const vote = async (anecdote) => {
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(anecdote)
+    }
+    const url = `${baseUrl}/${anecdote.id}`
+    const response = await fetch(url, options)
+
+    if (!response.ok) {
+        throw new Error('Failed to vote for the anecdote')
     }
     return await response.json()
 }
