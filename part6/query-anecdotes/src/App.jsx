@@ -5,6 +5,7 @@ import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 
 const App = () => {
+  
   const handleVote = (anecdote) => {
     console.log('vote')
   }
