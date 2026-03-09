@@ -15,6 +15,12 @@ const AnecdoteForm = () => {
       setTimeout(() => {
         notificationDispatch({ type: 'CLEAR' })
       }, 5000);   
+    },
+    onError: () => {
+      notificationDispatch({ type: 'POST_ERROR' })
+      setTimeout(() => {
+        notificationDispatch({ type: 'CLEAR' })
+      }, 5000);   
     }
   })
   const onCreate = (event) => {
