@@ -13,6 +13,4 @@ export const SuccessNotification = ({ message }) => {
   return <div className="successedAction">{message}</div>
 }
 
-
-
 export default { ErrorNotification, SuccessNotification }
