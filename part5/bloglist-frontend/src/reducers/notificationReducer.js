@@ -9,8 +9,8 @@ const notificationReducer = (state = null, action) => {
   }
 }
 
-export const createNotification = (message) => {
-  return { type: 'SET_NOTIFICATION',  payload: message }
+export const createNotification = (message, type) => {
+  return { type: 'SET_NOTIFICATION',  payload: { message, type } }
 }
 
 export const removeNotification = () => {

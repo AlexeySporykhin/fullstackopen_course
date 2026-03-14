@@ -1,16 +1,9 @@
-export const ErrorNotification = ({ message }) => {
-  if (message === null) {
+const Notification = ({ notification }) => {
+  if (notification === null) {
     return null
   }
 
-  return <div className="error">{message}</div>
-}
-export const SuccessNotification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
-
-  return <div className="successedAction">{message}</div>
+  return <div className={notification.type === 'error' ? 'error' : 'successedAction'}>{notification.message}</div>
 }
 
-export default { ErrorNotification, SuccessNotification }
+export default Notification
