@@ -1,5 +1,7 @@
-const Notification = ({ notification }) => {
-  if (notification === null) {
+import { useSelector } from 'react-redux'
+const Notification = () => {
+  const notification = useSelector(state => state)
+  if (!notification || !notification.message) {
     return null
   }
 

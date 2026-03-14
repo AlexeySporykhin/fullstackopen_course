@@ -6,7 +6,7 @@ import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import { createNotification, removeNotification } from './reducers/notificationReducer'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -15,7 +15,6 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
-  const notification = useSelector(state => state)
 
   const blogFormRef = useRef()
 
@@ -125,7 +124,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification notification={notification} />
+        <Notification/>
         {loginForm()}
       </div>
     )
@@ -133,7 +132,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification notification={notification} />
+      <Notification/>
       <div>{user.name} logged in
         <button onClick={handleLogout}> logout </button>
       </div>
