@@ -7,7 +7,7 @@ import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import { createNotification, removeNotification } from './reducers/notificationReducer'
 import { useDispatch, useSelector } from 'react-redux'
-import { createBlog, initializeBlogs } from './reducers/blogReducer'
+import { createBlog, initializeBlogs, changeBlog, removeBlog } from './reducers/blogReducer'
 
 const App = () => {
 
@@ -45,17 +45,17 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      dispatch(createNotification(`${user.name} successfully logged`, 'success'))
+      dispatch(createNotification({ message: `${user.name} successfully logged`, type: 'success' }))
       setTimeout(() => dispatch(removeNotification()), 5000)
     } catch {
-      dispatch(createNotification('wrong username or password', 'error'))
+      dispatch(createNotification({ message: 'wrong username or password', type: 'error' }))
       setTimeout(() => dispatch(removeNotification()), 5000)
     }
   }
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedNoteappUser')
-    dispatch(createNotification(`${user.name} successfully logouted`, 'success'))
+    dispatch(createNotification({ message: `${user.name} successfully logouted`, type: 'success' }))
     setTimeout(() => dispatch(removeNotification()), 5000)
     blogService.setToken(null)
     setUser(null)
@@ -89,33 +89,29 @@ const App = () => {
 
   const addBlog = async blogObject => {
     blogFormRef.current.toggleVisibility()
-    dispatch(createBlog(blogObject))
-    dispatch(createNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, 'success'))
+    await dispatch(createBlog(blogObject))
+    dispatch(createNotification({ message: `a new blog ${blogObject.title} by ${blogObject.author} added`, type: 'success' }))
     setTimeout(() => dispatch(removeNotification()), 5000)
   }
 
   const updateBlog = async (id, blogObject) => {
     try {
-      const returnedBlog = await blogService.update(id, blogObject)
-      setBlogs(blogs.map(blog => blog.id !== id ? blog : { ...returnedBlog, user: blog.user }))
-      dispatch(createNotification('Liked a post', 'success'))
-      setTimeout(() => dispatch(removeNotification()), 5000)
+      await dispatch(changeBlog(id, blogObject))
+      dispatch(createNotification({ message: 'Liked a post', type: 'success' }))
     } catch {
-      setBlogs(blogs)
-      dispatch(createNotification('User invalid. User must be creator of the blog', 'error'))
+      dispatch(createNotification({ message: 'User invalid. User must be creator of the blog', type: 'error' }))
+    } finally {
       setTimeout(() => dispatch(removeNotification()), 5000)
     }
   }
 
   const deleteBlog = async id => {
     try {
-      await blogService.deleteBlog(id)
-      setBlogs(blogs.filter(blog => blog.id !== id))
-      dispatch(createNotification('Blog has been deleted', 'success'))
-      setTimeout(() => dispatch(removeNotification()), 5000)
+      await dispatch(removeBlog(id))
+      dispatch(createNotification({ message: 'Blog has been deleted', type: 'success' }))
     } catch {
-      setBlogs(blogs)
-      dispatch(createNotification('User invalid. User must be creator of the blog', 'error' ))
+      dispatch(createNotification({ message: 'User invalid. User must be creator of the blog', type: 'error' }))
+    } finally {
       setTimeout(() => dispatch(removeNotification()), 5000)
     }
   }
