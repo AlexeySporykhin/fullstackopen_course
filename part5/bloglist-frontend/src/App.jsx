@@ -26,7 +26,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeUser())
-  }, [])
+  }, [dispatch])
 
   const handleLogin = async event => {
     event.preventDefault()
