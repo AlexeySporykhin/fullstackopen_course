@@ -7,6 +7,10 @@ import { createNotification, removeNotification } from './reducers/notificationR
 import { useDispatch, useSelector } from 'react-redux'
 import { createBlog, initializeBlogs, changeBlog, removeBlog } from './reducers/blogReducer'
 import { loginUser, logoutUser, initializeUser } from './reducers/userReducer'
+import { Container } from '@mui/material'
+import UsersView from './components/UsersView'
+import { Routes, Route } from 'react-router-dom'
+
 
 const App = () => {
 
@@ -105,30 +109,53 @@ const App = () => {
 
   if (user === null) {
     return (
+      <Container>
+        <div>
+          <h2>Log in to application</h2>
+          <Notification/>
+          {loginForm()}
+        </div>
+      </Container>
+    )
+  }
+
+  const Home = () => {
+    return (
       <div>
-        <h2>Log in to application</h2>
-        <Notification/>
-        {loginForm()}
+        <h2>create new </h2>
+        <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+          <BlogForm
+            createBlog={addBlog}
+          />
+        </Togglable>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} />
+        )}
       </div>
     )
   }
-  return (
-    <div>
-      <h2>blogs</h2>
-      <Notification/>
+
+  const LoggedUserView = () => {
+    return (
       <div>{user.name} logged in
         <button onClick={handleLogout}> logout </button>
       </div>
-      <h2>create new </h2>
-      <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-        <BlogForm
-          createBlog={addBlog}
-        />
-      </Togglable>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} />
-      )}
-    </div>
+    )
+  }
+
+
+  return (
+    <Container>
+      <div>
+        <h2>blogs</h2>
+        <Notification/>
+        <LoggedUserView />
+        <Routes>
+          <Route path='/' element={ <Home/>} />
+          <Route path='/users' element = {<UsersView blogs={blogs} />} />
+        </Routes>
+      </div>
+    </Container>
   )
 }
 
