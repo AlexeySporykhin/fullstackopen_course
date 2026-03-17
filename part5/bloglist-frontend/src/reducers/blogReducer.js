@@ -34,7 +34,7 @@ export const initializeBlogs = () => {
 
 export const createBlog = (blogObject) => {
   return async dispatch => {
-    const returnedBlog = await blogService.create(blogObject)
+    const returnedBlog = await blogService.createBlog(blogObject)
     dispatch(appendBlog(returnedBlog))
   }
 }
@@ -50,6 +50,13 @@ export const removeBlog = id => {
   return async dispatch => {
     await blogService.deleteBlog(id)
     dispatch(deleteBlog(id))
+  }
+}
+
+export const createComment = (id, comment) => {
+  return async dispatch => {
+    const returnedBlog = await blogService.createComment(id, comment)
+    dispatch(updateBlog(returnedBlog))
   }
 }
 

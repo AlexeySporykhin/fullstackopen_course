@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import Togglable from './components/Togglable'
 import { createNotification, removeNotification } from './reducers/notificationReducer'
 import { useDispatch, useSelector } from 'react-redux'
-import { createBlog, initializeBlogs, changeBlog, removeBlog } from './reducers/blogReducer'
+import { createBlog, initializeBlogs, changeBlog, removeBlog, createComment } from './reducers/blogReducer'
 import { loginUser, logoutUser, initializeUser } from './reducers/userReducer'
 import { Container } from '@mui/material'
 import { Routes, Route, useMatch } from 'react-router-dom'
@@ -113,6 +113,17 @@ const App = () => {
     }
   }
 
+  const addComment = async (id, comment) => {
+    try {
+      await dispatch(createComment(id, comment))
+      dispatch(createNotification({ message: `Added comment: ${comment} `, type: 'success' }))
+    } catch {
+      dispatch(createNotification({ message: 'User invalid. User must be creator of the blog', type: 'error' }))
+    } finally {
+      setTimeout(() => dispatch(removeNotification()), 5000)
+    }
+  }
+
   if (user === null) {
     return (
       <Container>
@@ -152,7 +163,7 @@ const App = () => {
           <Route path='/' element={ <Blogs/>} />
           <Route path='/users' element = {<UsersView blogs={blogs} />} />
           <Route path='/user/:id' element = {<UserView blogs={blogs} />} />
-          <Route path='/blogs/:id' element = {<BlogDetailsView blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} />} />
+          <Route path='/blogs/:id' element = {<BlogDetailsView blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} addComment={addComment} />} />
         </Routes>
       </div>
     </Container>
