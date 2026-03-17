@@ -13,6 +13,7 @@ import BlogForm from './components/BlogForm'
 import UsersView from './components/UsersView'
 import UserView from './components/UserView'
 import BlogDetailsView from './components/BlogDetailsView'
+import NavMenu from './components/NavMenu'
 
 const App = () => {
 
@@ -140,21 +141,13 @@ const App = () => {
     )
   }
 
-  const LoggedUserView = () => {
-    return (
-      <div>{user.name} logged in
-        <button onClick={handleLogout}> logout </button>
-      </div>
-    )
-  }
-
 
   return (
     <Container>
       <div>
         <h2>blogs</h2>
         <Notification/>
-        <LoggedUserView />
+        <NavMenu user={user} handleLogout={handleLogout} />
         <Routes>
           <Route path='/' element={ <Blogs/>} />
           <Route path='/users' element = {<UsersView blogs={blogs} />} />
