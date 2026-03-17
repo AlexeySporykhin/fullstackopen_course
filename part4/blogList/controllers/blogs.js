@@ -76,6 +76,23 @@ blogsRouter.put('/:id', userExtractor, async (request, response) => {
   return response.status(200).json(savedBlog)
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+  if (!blog) {
+    return response.status(404).end()
+  }
+
+  const comment = request.body.comment
+  if (!comment) {
+    return response.status(400).json({ error: 'Comment is missing' })
+  }
+
+  blog.comments = blog.comments.concat(comment)
+  const savedBlog = await blog.save()
+
+  return response.status(201).json(savedBlog)
+})
+
 module.exports = blogsRouter
 
 
