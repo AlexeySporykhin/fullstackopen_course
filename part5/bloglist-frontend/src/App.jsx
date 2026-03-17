@@ -1,16 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
-import Notification from './components/Notification'
-import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import { createNotification, removeNotification } from './reducers/notificationReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { createBlog, initializeBlogs, changeBlog, removeBlog } from './reducers/blogReducer'
 import { loginUser, logoutUser, initializeUser } from './reducers/userReducer'
 import { Container } from '@mui/material'
-import UsersView from './components/UsersView'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useMatch } from 'react-router-dom'
 
+import Blog from './components/Blog'
+import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
+import UsersView from './components/UsersView'
+import UserView from './components/UserView'
+import BlogDetailsView from './components/BlogDetailsView'
 
 const App = () => {
 
@@ -23,6 +25,9 @@ const App = () => {
   const dispatch = useDispatch()
 
   const blogFormRef = useRef()
+
+  const match = useMatch('/blogs/:id')
+  const blog = match ? blogs.find(blog => blog.id === match.params.id) : null
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -119,7 +124,7 @@ const App = () => {
     )
   }
 
-  const Home = () => {
+  const Blogs = () => {
     return (
       <div>
         <h2>create new </h2>
@@ -129,7 +134,7 @@ const App = () => {
           />
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} />
+          <Blog key={blog.id} blog={blog}/>
         )}
       </div>
     )
@@ -151,8 +156,10 @@ const App = () => {
         <Notification/>
         <LoggedUserView />
         <Routes>
-          <Route path='/' element={ <Home/>} />
+          <Route path='/' element={ <Blogs/>} />
           <Route path='/users' element = {<UsersView blogs={blogs} />} />
+          <Route path='/user/:id' element = {<UserView blogs={blogs} />} />
+          <Route path='/blogs/:id' element = {<BlogDetailsView blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} />} />
         </Routes>
       </div>
     </Container>

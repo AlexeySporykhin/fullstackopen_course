@@ -1,4 +1,5 @@
 import { Table, TableContainer, TableBody, TableCell, TableRow, TableHead } from '@mui/material'
+import { Link } from 'react-router-dom'
 
 const UsersView = ({ blogs }) => {
 
@@ -32,7 +33,9 @@ const UsersView = ({ blogs }) => {
           <TableBody>
             {usersStats.map((user) => (
               <TableRow key={user.id}>
-                <TableCell>{user.name}</TableCell>
+                <TableCell>
+                  <Link to={`/user/${user.id}`} style={{ marginLeft: '10px' }}>{user.name}</Link>
+                </TableCell>
                 <TableCell>{user.createdBlogs}</TableCell>
               </TableRow>
             ))}
