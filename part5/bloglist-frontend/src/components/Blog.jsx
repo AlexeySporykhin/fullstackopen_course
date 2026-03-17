@@ -1,57 +1,20 @@
-import { useState } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
+import { Link, Paper, Typography } from '@mui/material'
 
-const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
-  const [detailsVisible, setDetailsVisible] = useState(false)
-
-  const showWhenVisible = { display: detailsVisible ? '' : 'none' }
-
-  const toggleVisibility = () => {
-    setDetailsVisible(!detailsVisible)
-  }
-
-  const handleLike = () => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1
-    }
-    updateBlog(blog.id, updatedBlog)
-  }
-
-  const handleRemove = () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      deleteBlog(blog.id)
-    }
-  }
-
-  const blogDetails = () => (
-    <div>
-      <div >{blog.url}</div>
-      <div >likes {blog.likes}
-        <button onClick={handleLike}>like</button>
-      </div>
-      <div>{blog.user && blog.user.name}</div>
-      {blog.user && blog.user.username === user.username
-        && <div><button onClick={handleRemove}>remove</button></div>}
-    </div>
-  )
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
+const Blog = ({ blog }) => {
   return (
-    <div data-testid="blog" style={blogStyle}>
-      <div className='blogTitle'>
-        {blog.title} {blog.author}
-        <button onClick={toggleVisibility}>{detailsVisible ? 'hide' : 'view'}</button>
-        <div className='blogDetails' style={showWhenVisible}>
-          {blogDetails()}
-        </div>
-      </div>
-    </div>
+    <Paper data-testid="blog" variant="outlined" sx={{ p: 2 }}>
+      <Typography variant="subtitle1" className="blogTitle">
+        <Link
+          component={RouterLink}
+          to={`/blogs/${blog.id}`}
+          underline="hover"
+          color="inherit"
+        >
+          {blog.title} {blog.author}
+        </Link>
+      </Typography>
+    </Paper>
   )
 
 }

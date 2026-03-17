@@ -1,3 +1,4 @@
+import { Alert } from '@mui/material'
 import { useSelector } from 'react-redux'
 const Notification = () => {
   const notification = useSelector(state => state.notification)
@@ -5,7 +6,11 @@ const Notification = () => {
     return null
   }
 
-  return <div className={notification.type === 'error' ? 'error' : 'successedAction'}>{notification.message}</div>
+  return (
+    <Alert severity={notification.type === 'error' ? 'error' : 'success'}>
+      {notification.message}
+    </Alert>
+  )
 }
 
 export default Notification

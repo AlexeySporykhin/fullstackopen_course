@@ -41,3 +41,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFsZ
 {    
   "likes": 100
 }
+
+### post comment
+post   http://localhost:3003/api/blogs/699d7ab41c768df56b28dcf2/comments
+
+{
+  "comment": "test comment"
+}
