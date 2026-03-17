@@ -4,7 +4,7 @@ import { createNotification, removeNotification } from './reducers/notificationR
 import { useDispatch, useSelector } from 'react-redux'
 import { createBlog, initializeBlogs, changeBlog, removeBlog, createComment } from './reducers/blogReducer'
 import { loginUser, logoutUser, initializeUser } from './reducers/userReducer'
-import { Container } from '@mui/material'
+import { Box, Button, Container, Paper, Stack, TextField, Typography } from '@mui/material'
 import { Routes, Route, useMatch } from 'react-router-dom'
 
 import Blog from './components/Blog'
@@ -59,29 +59,25 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label>
-          username
-          <input
-            type="text"
-            value={username}
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          password
-          <input
-            type="password"
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </label>
-      </div>
-      <button type="submit">login</button>
-    </form>
+    <Box component="form" onSubmit={handleLogin}>
+      <Stack spacing={2}>
+        <TextField
+          label="username"
+          type="text"
+          value={username}
+          onChange={({ target }) => setUsername(target.value)}
+        />
+        <TextField
+          label="password"
+          type="password"
+          value={password}
+          onChange={({ target }) => setPassword(target.value)}
+        />
+        <Button type="submit" variant="contained">
+          login
+        </Button>
+      </Stack>
+    </Box>
   )
 
   const addBlog = async blogObject => {
@@ -126,47 +122,60 @@ const App = () => {
 
   if (user === null) {
     return (
-      <Container>
-        <div>
-          <h2>Log in to application</h2>
-          <Notification/>
-          {loginForm()}
-        </div>
+      <Container maxWidth="sm" sx={{ py: 4 }}>
+        <Paper sx={{ p: 3 }}>
+          <Stack spacing={2}>
+            <Typography variant="h5">Log in to application</Typography>
+            <Notification />
+            {loginForm()}
+          </Stack>
+        </Paper>
       </Container>
     )
   }
 
-  const Blogs = () => {
-    return (
-      <div>
-        <h2>create new </h2>
-        <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-          <BlogForm
-            createBlog={addBlog}
-          />
-        </Togglable>
+  const Blogs = () => (
+    <Stack spacing={2}>
+      <Typography variant="h5">create new</Typography>
+      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+        <BlogForm createBlog={addBlog} />
+      </Togglable>
+      <Stack spacing={1.5}>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog}/>
+          <Blog key={blog.id} blog={blog} />
         )}
-      </div>
-    )
-  }
+      </Stack>
+    </Stack>
+  )
 
 
   return (
-    <Container>
-      <div>
-        <h2>blogs</h2>
-        <Notification/>
-        <NavMenu user={user} handleLogout={handleLogout} />
-        <Routes>
-          <Route path='/' element={ <Blogs/>} />
-          <Route path='/users' element = {<UsersView blogs={blogs} />} />
-          <Route path='/user/:id' element = {<UserView blogs={blogs} />} />
-          <Route path='/blogs/:id' element = {<BlogDetailsView blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} addComment={addComment} />} />
-        </Routes>
-      </div>
-    </Container>
+    <Box sx={{ flexGrow: 1 }}>
+      <NavMenu user={user} handleLogout={handleLogout} />
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Stack spacing={3}>
+          <Typography variant="h4">blogs</Typography>
+          <Notification />
+          <Routes>
+            <Route path="/" element={<Blogs />} />
+            <Route path="/users" element={<UsersView blogs={blogs} />} />
+            <Route path="/user/:id" element={<UserView blogs={blogs} />} />
+            <Route
+              path="/blogs/:id"
+              element={(
+                <BlogDetailsView
+                  blog={blog}
+                  updateBlog={updateBlog}
+                  deleteBlog={deleteBlog}
+                  user={user}
+                  addComment={addComment}
+                />
+              )}
+            />
+          </Routes>
+        </Stack>
+      </Container>
+    </Box>
   )
 }
 

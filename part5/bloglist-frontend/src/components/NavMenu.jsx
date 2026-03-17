@@ -1,16 +1,25 @@
-import { Link } from 'react-router-dom'
+import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material'
+import { Link as RouterLink } from 'react-router-dom'
 
 const NavMenu = ({ user, handleLogout }) => {
-  const padding = {
-    padding: 5
-  }
   return (
-    <div>
-      <Link to="/" style={padding}>blogs</Link>
-      <Link to="/users" style={padding}>users</Link>
-      {user.name} logged in
-      <button onClick={handleLogout}> logout </button>
-    </div>
+    <AppBar position="static">
+      <Toolbar>
+        <Button color="inherit" component={RouterLink} to="/">
+          blogs
+        </Button>
+        <Button color="inherit" component={RouterLink} to="/users">
+          users
+        </Button>
+        <Box sx={{ flexGrow: 1 }} />
+        <Typography variant="body2" sx={{ mr: 2 }}>
+          {user.name} logged in
+        </Typography>
+        <Button color="inherit" onClick={handleLogout}>
+          logout
+        </Button>
+      </Toolbar>
+    </AppBar>
   )
 }
 

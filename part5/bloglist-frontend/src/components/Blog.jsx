@@ -1,21 +1,20 @@
-import { Link } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
+import { Link, Paper, Typography } from '@mui/material'
 
 const Blog = ({ blog }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
   return (
-    <div data-testid="blog" style={blogStyle}>
-      <div className='blogTitle'>
-        <Link to={`/blogs/${blog.id}`}>
+    <Paper data-testid="blog" variant="outlined" sx={{ p: 2 }}>
+      <Typography variant="subtitle1" className="blogTitle">
+        <Link
+          component={RouterLink}
+          to={`/blogs/${blog.id}`}
+          underline="hover"
+          color="inherit"
+        >
           {blog.title} {blog.author}
         </Link>
-      </div>
-    </div>
+      </Typography>
+    </Paper>
   )
 
 }
