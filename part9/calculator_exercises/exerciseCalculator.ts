@@ -7,6 +7,22 @@ interface ExercisesStats {
   target: number;
   average: number;
 }
+
+const parseExerciseArguments = (
+  args: string[],
+): { dailyExercises: number[]; target: number } => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+
+  const target = Number(args[2]);
+  if (isNaN(target)) throw new Error("Target value must be a number");
+
+  const dailyExercises = args.slice(3).map(Number);
+  if (dailyExercises.some(isNaN))
+    throw new Error("All exercise values must be numbers");
+
+  return { target, dailyExercises };
+};
+
 const calculateExercises = (
   dailyExercises: number[],
   target: number,
@@ -34,4 +50,13 @@ const calculateExercises = (
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const { target, dailyExercises } = parseExerciseArguments(process.argv);
+  console.log(calculateExercises(dailyExercises, target));
+} catch (error: unknown) {
+  let errorMessage = "Something went wrong.";
+  if (error instanceof Error) {
+    errorMessage += " Error: " + error.message;
+  }
+  console.log(errorMessage);
+}
