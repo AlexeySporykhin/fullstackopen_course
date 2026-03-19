@@ -23,7 +23,7 @@ const parseExerciseArguments = (
   return { target, dailyExercises };
 };
 
-const calculateExercises = (
+export const calculateExercises = (
   dailyExercises: number[],
   target: number,
 ): ExercisesStats => {
@@ -50,13 +50,15 @@ const calculateExercises = (
   };
 };
 
-try {
-  const { target, dailyExercises } = parseExerciseArguments(process.argv);
-  console.log(calculateExercises(dailyExercises, target));
-} catch (error: unknown) {
-  let errorMessage = "Something went wrong.";
-  if (error instanceof Error) {
-    errorMessage += " Error: " + error.message;
+if (require.main === module) {
+  try {
+    const { target, dailyExercises } = parseExerciseArguments(process.argv);
+    console.log(calculateExercises(dailyExercises, target));
+  } catch (error: unknown) {
+    let errorMessage = "Something went wrong.";
+    if (error instanceof Error) {
+      errorMessage += " Error: " + error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
 }
