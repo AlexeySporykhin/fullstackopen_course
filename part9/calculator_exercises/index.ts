@@ -5,7 +5,7 @@ import { isNotNumber } from "./utils/helperFunctions";
 import { calculateExercises } from "./exerciseCalculator";
 
 const app = express();
-app.use(express.json())
+app.use(express.json());
 
 app.get("/hello", (_req, res) => {
   return res.send("Hello Full Stack!");
@@ -25,7 +25,8 @@ app.get("/bmi", (req, res) => {
   });
 });
 
-app.post("/exercises", (req, res) => {  
+app.post("/exercises", (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { daily_exercises, target } = req.body;
 
   if (!daily_exercises || !target) {
@@ -37,9 +38,11 @@ app.post("/exercises", (req, res) => {
   }
 
   if (daily_exercises.some(isNaN)) {
-    return res.status(400).json({ error: "All exercise values must be numbers" });
+    return res
+      .status(400)
+      .json({ error: "All exercise values must be numbers" });
   }
-
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const result = calculateExercises(daily_exercises, target);
   return res.json(result);
 });
