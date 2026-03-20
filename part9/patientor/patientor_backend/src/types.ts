@@ -5,5 +5,13 @@ export interface Diagnosis {
 } 
 
 export type NonSensitiveDiagnosis = Omit<Diagnosis, 'latin'>;
+export interface Patient {
+  id: string;
+  name: string;
+  dateOfBirth: string;
+  ssn: string;
+  gender: 'male' | 'female' | 'other';
+  occupation: string;
+}
 
-export type NewDiagnosis = Omit<Diagnosis, 'code'>;
+export type NonSensitivePatient = Omit<Patient, 'ssn'>;
