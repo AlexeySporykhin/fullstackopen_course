@@ -6,12 +6,19 @@ export interface Diagnosis {
 
 export type NonSensitiveDiagnosis = Omit<Diagnosis, 'latin'>;
 
+export enum Gender {
+  MALE = "male",
+  FEMALE = "female",
+  OTHER = "other"
+}
+
+
 export interface Patient {
   id: string;
   name: string;
   dateOfBirth: string;
   ssn: string;
-  gender: 'male' | 'female' | 'other';
+  gender: Gender;
   occupation: string;
 }
 
