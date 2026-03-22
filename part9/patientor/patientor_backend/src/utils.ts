@@ -28,5 +28,3 @@ export const requestLogger = (request: any, _response: any, next: any) => {
   info("---");
   next();
 };
-
-export default toNewPatient;

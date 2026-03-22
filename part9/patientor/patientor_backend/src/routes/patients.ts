@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import patientsService from "../services/patientsService";
-import { toNewPatient } from "../utils";
-import { z } from 'zod';
+import { newPatientSchema } from "../utils";
+import { z } from "zod";
+import { Patient, NewPatient } from "../types";
 
 const router = express.Router();
 
@@ -10,18 +10,37 @@ router.get("/", (_req, res) => {
   res.send(patientsService.getNonSensitivePatients());
 });
 
-router.post("/", (req, res) => {
+const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
   try {
-    const newPatient = toNewPatient(req.body);
-    const addedPatient = patientsService.addPatient(newPatient);
-    res.json(addedPatient);
+    newPatientSchema.parse(req.body);
+    next();
   } catch (error: unknown) {
-    if (error instanceof z.ZodError) {
-      res.status(400).send({ error: error.issues });
-    } else {
-      res.status(400).send({ error: "unknown error" });
-    }
+    next(error);
   }
-});
+};
+
+const errorMiddleware = (
+  error: unknown,
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (error instanceof z.ZodError) {
+    res.status(400).send({ error: error.issues });
+  } else {
+    next(error);
+  }
+};
+
+router.post(
+  "/",
+  newPatientParser,
+  (req: Request<unknown, unknown, NewPatient>, res: Response<Patient>) => {
+    const addedPatient = patientsService.addPatient(req.body);
+    res.json(addedPatient);
+  },
+);
+
+router.use(errorMiddleware);
 
 export default router;
