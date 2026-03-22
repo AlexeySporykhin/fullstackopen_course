@@ -1,2 +1,15 @@
 ###
-post http://localhost:3001/api/diagnoses/
+post http://localhost:3001/api/patients/
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "dateOfBirth": "1980-01-01",
+  "ssn": "123-45-6789",
+  "gender": "male",
+  "occupation": "Software Engineer"
+}
+
+
+###
+get http://localhost:3001/api/patients/

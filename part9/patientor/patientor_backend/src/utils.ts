@@ -1,62 +1,32 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { NewPatient, Gender } from "./types";
+import { z } from "zod";
 
-const isString = (text: unknown): text is string => {
-  return typeof text === "string" || text instanceof String;
-};
-
-const parseString = (value: unknown): string => {
-  if (!value || !isString(value)) {
-    throw new Error("Incorrect or missing data");
-  }
-  return value;
-};
-
-const isDate = (date: string): boolean => {
-  return Boolean(Date.parse(date));
-};
-
-const parseDate = (date: unknown): string => {
-  if (!date || !isString(date) || !isDate(date)) {
-    throw new Error("Incorrect or missing date: " + date);
-  }
-  return date;
-};
-
-const isGender = (param: string): param is Gender => {
-  return Object.values(Gender)
-    .map(v => v.toString())
-    .includes(param);
-};
-
-const parseGender = (gender: unknown): Gender => {
-  if (!gender || !isString(gender) || !isGender(gender)) {
-    throw new Error("Incorrect or missing gender: " + gender);
-  }
-  return gender;
-};
+export const newPatientSchema = z.object({
+  name: z.string().trim().min(1, "Name is required"),
+  dateOfBirth: z.string().date(),
+  ssn: z.string().trim().min(1, "SSN is required"),
+  gender: z.enum(Gender),
+  occupation: z.string().trim().min(1, "Occupation is required"),
+});
 
 export const toNewPatient = (object: unknown): NewPatient => {
-  if (!object || typeof object !== "object") {
-    throw new Error("Incorrect or missing data");
-  }
+  return newPatientSchema.parse(object);
+};
 
-  if (
-    "name" in object &&
-    "dateOfBirth" in object &&
-    "ssn" in object &&
-    "gender" in object &&
-    "occupation" in object
-  ) {
-    const newPatient: NewPatient = {
-      name: parseString(object.name),
-      dateOfBirth: parseDate(object.dateOfBirth),
-      ssn: parseString(object.ssn),
-      gender: parseGender(object.gender),
-      occupation: parseString(object.occupation),
-    };
-    return newPatient;
-  }
-  throw new Error("Incorrect data: some fields are missing");
+const info = (...params: string[]) => {
+  console.log(...params);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const requestLogger = (request: any, _response: any, next: any) => {
+  info("Method:", request.method);
+  info("Path:  ", request.path);
+  info("Body:  ", request.body);
+  info("---");
+  next();
 };
 
 export default toNewPatient;
