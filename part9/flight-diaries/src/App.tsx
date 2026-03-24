@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { DiaryEntry, DiaryVisibility, DiaryWeather, NewDiaryEntry } from "./types";
+import axios from "axios";
+import {
+  DiaryEntry,
+  DiaryVisibility,
+  DiaryWeather,
+  NewDiaryEntry,
+} from "./types";
 import { createDiaryEntry, getAllDiaries } from "./services/diaries";
 
 const App = () => {
@@ -7,13 +13,14 @@ const App = () => {
   const [date, setDate] = useState<string>("");
   const [visibility, setVisibility] = useState<string>("");
   const [weather, setWeather] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     getAllDiaries().then(data => {
       setDiaries(data);
     });
   }, []);
 
-  const diaryCreation = (event: React.SyntheticEvent) => {
+  const diaryCreation = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     const newDiary: NewDiaryEntry = {
       date: date,
@@ -21,29 +28,62 @@ const App = () => {
       weather: weather as DiaryWeather,
       comment: "",
     };
-    createDiaryEntry(newDiary).then(data => {
+    try {
+      const data = await createDiaryEntry(newDiary);
       setDiaries([...diaries, data]);
-    });
-    setDate("");
-    setVisibility("");
-    setWeather("");
+      setDate("");
+      setVisibility("");
+      setWeather("");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log('AxiosError:', error.response)
+        setError(error.response?.data ?? "Error creating diary entry");
+        setTimeout(() => {
+          setError(null);
+        }, 5000);
+      } else {
+        setError("Error creating diary entry");
+        setTimeout(() => {
+          setError(null);
+        }, 5000);
+      }
+    }
   };
 
   return (
     <div>
       <h2> Add new entry</h2>
+      {error && <div style={{ color: "red" }}>{error}</div>}
       <form onSubmit={diaryCreation} style={{ marginBottom: "20px" }}>
         <div>
           <label htmlFor="date">Date</label>
-          <input name="date" id="date" placeholder="YYYY-MM-DD" value={date} onChange={({target}) => setDate(target.value)} />
+          <input
+            name="date"
+            id="date"
+            placeholder="YYYY-MM-DD"
+            value={date}
+            onChange={({ target }) => setDate(target.value)}
+          />
         </div>
         <div>
           <label htmlFor="visibility">Visibility</label>
-          <input name="visibility" id="visibility" placeholder="Visibility" value={visibility} onChange={({target}) => setVisibility(target.value)} />
+          <input
+            name="visibility"
+            id="visibility"
+            placeholder="Visibility"
+            value={visibility}
+            onChange={({ target }) => setVisibility(target.value)}
+          />
         </div>
         <div>
           <label htmlFor="weather">Weather</label>
-          <input name="weather" id="weather" placeholder="Weather" value={weather} onChange={({target}) => setWeather(target.value)} />
+          <input
+            name="weather"
+            id="weather"
+            placeholder="Weather"
+            value={weather}
+            onChange={({ target }) => setWeather(target.value)}
+          />
         </div>
         <button type="submit">Add</button>
       </form>
