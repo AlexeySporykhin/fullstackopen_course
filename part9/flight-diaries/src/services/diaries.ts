@@ -8,6 +8,7 @@ export const getAllDiaries = async () => {
 };
 
 export const createDiaryEntry = async (object: NewDiaryEntry) => {  
+  console.log('object: ', object)
   const { data } = await axios.post<DiaryEntry>(`${apiBaseUrl}/diaries`, object);
   return data;
 };

@@ -9,7 +9,7 @@ export enum DiaryWeather {
 export enum DiaryVisibility {
   GREAT = 'great',
   GOOD = 'good',
-  MODERATE = 'moderate',
+  OK = 'ok',
   POOR = 'poor'
 }
 
