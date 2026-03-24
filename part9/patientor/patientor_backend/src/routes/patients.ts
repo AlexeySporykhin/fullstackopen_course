@@ -10,6 +10,10 @@ router.get("/", (_req, res) => {
   res.send(patientsService.getNonSensitivePatients());
 });
 
+router.get("/:id", (req, res) => {
+  res.send(patientsService.getPatientById(req.params.id));
+});
+
 const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
   try {
     newPatientSchema.parse(req.body);
@@ -18,6 +22,15 @@ const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+router.post(
+  "/",
+  newPatientParser,
+  (req: Request<unknown, unknown, NewPatient>, res: Response<Patient>) => {
+    const addedPatient = patientsService.addPatient(req.body);
+    res.json(addedPatient);
+  },
+);
 
 const errorMiddleware = (
   error: unknown,
@@ -31,15 +44,6 @@ const errorMiddleware = (
     next(error);
   }
 };
-
-router.post(
-  "/",
-  newPatientParser,
-  (req: Request<unknown, unknown, NewPatient>, res: Response<Patient>) => {
-    const addedPatient = patientsService.addPatient(req.body);
-    res.json(addedPatient);
-  },
-);
 
 router.use(errorMiddleware);
 
