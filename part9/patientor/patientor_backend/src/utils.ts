@@ -1,19 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { NewPatient, Gender } from "./types";
-import { z } from "zod";
+import { newPatientSchema } from "./types";
 
-export const newPatientSchema = z.object({
-  name: z.string().trim().min(1, "Name is required"),
-  dateOfBirth: z.string().date(),
-  ssn: z.string().trim().min(1, "SSN is required"),
-  gender: z.enum(Gender),
-  occupation: z.string().trim().min(1, "Occupation is required"),
-  entries: z.array(z.object({})).default([]),
-});
-
-export const toNewPatient = (object: unknown): NewPatient => {
+export const toNewPatient = (object: unknown) => {
   return newPatientSchema.parse(object);
 };
 
