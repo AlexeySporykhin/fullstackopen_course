@@ -3,9 +3,12 @@ import { Patient } from "../types";
 import patientService from "../services/patients";
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
+import diagnosesService from "../services/diagnoses";
+import { Diagnosis } from "../types";
 
-const PatientPage = (props: { patientId: string }) => {  
+const PatientPage = (props: { patientId: string }) => {
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   useEffect(() => {
     const fetchPatient = async () => {
       const patient = await patientService.getById(props.patientId);
@@ -13,10 +16,19 @@ const PatientPage = (props: { patientId: string }) => {
     };
     fetchPatient();
   }, [props.patientId]);
+
+  useEffect(() => {
+    const fetchDiagnoses = async () => {
+      const diagnoses = await diagnosesService.getAll();
+      setDiagnoses(diagnoses);
+    };
+    fetchDiagnoses();
+  }, []);
+
   if (!patient) {
     return <div>Loading...</div>;
   }
-  console.log('patient', patient);
+
   return (
     <div>
       <h2>
@@ -37,7 +49,11 @@ const PatientPage = (props: { patientId: string }) => {
               {entry.date} - {entry.description}
               <ul>
                 {entry.diagnosisCodes?.map(code => (
-                  <li key={code}> {code}</li>
+                  <li key={code}>
+                    {" "}
+                    {code} -{" "}
+                    {diagnoses.find(diagnosis => diagnosis.code === code)?.name}
+                  </li>
                 ))}
               </ul>
             </li>
