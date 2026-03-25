@@ -48,7 +48,7 @@ const App = () => {
           />
           <Route
             path="/patients/:id"
-            element={<PatientPage patientId={patient?.id ?? null} />}
+            element={patient ? <PatientPage patientId={patient.id} /> : <div>Patient not found</div>}
           />
         </Routes>
       </Container>
