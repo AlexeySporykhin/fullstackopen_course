@@ -1,8 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import patientsService from "../services/patientsService";
-import { newPatientSchema } from "../utils";
 import { z } from "zod";
-import { Patient, NewPatient } from "../types";
+import { Patient, NewPatient, newPatientSchema } from "../types";
 
 const router = express.Router();
 
