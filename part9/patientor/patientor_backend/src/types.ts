@@ -47,7 +47,15 @@ export const entrySchema = z.discriminatedUnion("type", [
   occupationalHealthcareEntrySchema,
   hospitalEntrySchema,
 ]);
+export const newEntrySchema = z.discriminatedUnion("type", [
+  healthCheckEntrySchema.omit({id: true}),
+  occupationalHealthcareEntrySchema.omit({id: true}),
+  hospitalEntrySchema.omit({id: true}),
+]);;
+
 export type Entry = z.infer<typeof entrySchema>;
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+export type NewEntry = UnionOmit<Entry, 'id'>;
 export const patientSchema = z.object({
   id: z.string(),
   name: z.string().trim().min(1),

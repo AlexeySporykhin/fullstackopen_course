@@ -1,7 +1,15 @@
 import express, { Request, Response, NextFunction } from "express";
-import patientsService from "../services/patientsService";
 import { z } from "zod";
-import { Patient, NewPatient, newPatientSchema } from "../types";
+import patientsService from "../services/patientsService";
+import {
+  Patient,
+  NewPatient,
+  newPatientSchema,
+  Entry,
+  NewEntry,
+  newEntrySchema,
+} from "../types";
+import { parseDiagnosisCodes } from "../utils";
 
 const router = express.Router();
 
@@ -28,6 +36,27 @@ router.post(
   (req: Request<unknown, unknown, NewPatient>, res: Response<Patient>) => {
     const addedPatient = patientsService.addPatient(req.body);
     res.json(addedPatient);
+  },
+);
+
+router.post(
+  "/:id/entries",
+  (
+    req: Request<{id: string}, Entry, NewEntry>,
+    res: Response<Entry>,
+    next: NextFunction,
+  ) => {
+    try {
+      const parsedBody = newEntrySchema.parse(req.body);
+      const diagnosisCodes = parseDiagnosisCodes(parsedBody);
+      const addedEntry = patientsService.addEntry(req.params.id, {
+        ...parsedBody,
+        diagnosisCodes,
+      });
+      res.json(addedEntry);
+    } catch (error) {
+      next(error);
+    }
   },
 );
 
