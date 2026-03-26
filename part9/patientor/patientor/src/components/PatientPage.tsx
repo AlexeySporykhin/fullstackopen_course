@@ -1,8 +1,19 @@
 import { useEffect, useState } from "react";
-import { Patient } from "../types";
-import patientService from "../services/patients";
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
+import WorkIcon from "@mui/icons-material/Work";
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { List, ListItem, Paper, Typography } from "@mui/material";
+import {
+  Patient,
+  Entry,
+  HealthCheckEntry,
+  HospitalEntry,
+  OccupationalHealthcareEntry,
+  HealthCheckRating,
+} from "../types";
+import patientService from "../services/patients";
 import diagnosesService from "../services/diagnoses";
 import { Diagnosis } from "../types";
 
@@ -29,6 +40,77 @@ const PatientPage = (props: { patientId: string }) => {
     return <div>Loading...</div>;
   }
 
+  const assertNever = (value: never): never => {
+    throw new Error(
+      `Unhandled discriminated union member: ${JSON.stringify(value)}`,
+    );
+  };
+
+  const HealthCheckEntry = ({ entry }: { entry: HealthCheckEntry }) => {
+    return (
+      <div>
+        <p>
+          {entry.date}{" "}
+          <MedicalServicesIcon fontSize="small" sx={{ color: "black" }} />{" "}
+        </p>
+        <p>{entry.description}</p>
+        {entry.healthCheckRating === HealthCheckRating.Healthy ? (
+          <FavoriteIcon fontSize="small" sx={{ color: "green" }} />
+        ) : entry.healthCheckRating === HealthCheckRating.LowRisk ? (
+          <FavoriteIcon fontSize="small" sx={{ color: "yellow" }} />
+        ) : entry.healthCheckRating === HealthCheckRating.HighRisk ? (
+          <FavoriteIcon fontSize="small" sx={{ color: "red" }} />
+        ) : entry.healthCheckRating === HealthCheckRating.CriticalRisk ? (
+          <FavoriteIcon fontSize="small" sx={{ color: "red" }} />
+        ) : null}
+        <p>diagnose by {entry.specialist}</p>
+        <p>{entry.diagnosisCodes?.join(", ")}</p>
+      </div>
+    );
+  };
+
+  const HospitalEntry = ({ entry }: { entry: HospitalEntry }) => {
+    return (
+      <div>
+        <p>{entry.date}</p>
+        <p>{entry.description}</p>
+        <p>diagnose by {entry.specialist}</p>
+        <p>{entry.diagnosisCodes?.join(", ")}</p>
+      </div>
+    );
+  };
+
+  const OccupationalHealthcareEntry = ({
+    entry,
+  }: {
+    entry: OccupationalHealthcareEntry;
+  }) => {
+    return (
+      <div>
+        <p>
+          {entry.date} <WorkIcon fontSize="small" sx={{ color: "black" }} />{" "}
+          {entry.employerName}
+        </p>
+        <p>{entry.description}</p>
+        <p>diagnose by {entry.specialist}</p>
+        <p>{entry.diagnosisCodes?.join(", ")}</p>
+      </div>
+    );
+  };
+
+  const EntryDetails = (entry: Entry) => {
+    switch (entry.type) {
+      case "HealthCheck":
+        return <HealthCheckEntry entry={entry} />;
+      case "Hospital":
+        return <HospitalEntry entry={entry} />;
+      case "OccupationalHealthcare":
+        return <OccupationalHealthcareEntry entry={entry} />;
+      default:
+        return assertNever(entry);
+    }
+  };
+
   return (
     <div>
       <h2>
@@ -41,25 +123,38 @@ const PatientPage = (props: { patientId: string }) => {
       </h2>
       <p>ssn: {patient.ssn}</p>
       <p>occupation: {patient.occupation}</p>
-      <h3>entries</h3>
-      <ul>
-        {patient.entries.map(entry => {
-          return (
-            <li key={entry.id}>
-              {entry.date} - {entry.description}
-              <ul>
-                {entry.diagnosisCodes?.map(code => (
-                  <li key={code}>
-                    {" "}
-                    {code} -{" "}
-                    {diagnoses.find(diagnosis => diagnosis.code === code)?.name}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          );
-        })}
-      </ul>
+      <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+        entries
+      </Typography>
+
+      <List disablePadding>
+        {patient.entries.map(entry => (
+          <ListItem key={entry.id} disableGutters sx={{ mb: 1.5 }}>
+            <Paper
+              variant="outlined"
+              sx={{
+                width: "100%",
+                p: 1.5,
+                borderColor: "grey.500",
+              }}
+            >
+              {EntryDetails(entry)}
+
+              {!!entry.diagnosisCodes?.length && (
+                <List dense sx={{ mt: 0.5, py: 0 }}>
+                  {entry.diagnosisCodes.map(code => (
+                    <ListItem key={code} sx={{ py: 0, px: 0 }}>
+                      <Typography variant="body2">
+                        {code} - {diagnoses.find(d => d.code === code)?.name}
+                      </Typography>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
+            </Paper>
+          </ListItem>
+        ))}
+      </List>
     </div>
   );
 };
