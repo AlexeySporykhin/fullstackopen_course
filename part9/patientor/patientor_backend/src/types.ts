@@ -16,30 +16,35 @@ export const diagnosisSchema = z.object({
   latin: z.string().optional(),
 });
 export type Diagnosis = z.infer<typeof diagnosisSchema>;
+
 const baseEntrySchema = z.object({
   id: z.string(),
-  description: z.string(),
-  date: z.string(),
-  specialist: z.string(),
+  description: z.string().trim().min(1, "Description is required"),
+  date: z.string().trim().min(1, "Date is required"),
+  specialist: z.string().trim().min(1, "Specialist is required"),
   diagnosisCodes: z.array(z.string()).optional(),
 });
+
 const healthCheckEntrySchema = baseEntrySchema.extend({
   type: z.literal("HealthCheck"),
   healthCheckRating: z.nativeEnum(HealthCheckRating),
 });
+
 const occupationalHealthcareEntrySchema = baseEntrySchema.extend({
   type: z.literal("OccupationalHealthcare"),
-  employerName: z.string(),
-  sickLeave: z.object({
-    startDate: z.string(),
-    endDate: z.string(),
-  }).optional(),
+  employerName: z.string().trim().min(1),
+  sickLeave: z
+    .object({
+      startDate: z.string(),
+      endDate: z.string(),
+    })
+    .optional(),
 });
 const hospitalEntrySchema = baseEntrySchema.extend({
   type: z.literal("Hospital"),
   discharge: z.object({
-    date: z.string(),
-    criteria: z.string(),
+    date: z.string().trim().min(1),
+    criteria: z.string().trim().min(1),
   }),
 });
 export const entrySchema = z.discriminatedUnion("type", [
@@ -48,14 +53,16 @@ export const entrySchema = z.discriminatedUnion("type", [
   hospitalEntrySchema,
 ]);
 export const newEntrySchema = z.discriminatedUnion("type", [
-  healthCheckEntrySchema.omit({id: true}),
-  occupationalHealthcareEntrySchema.omit({id: true}),
-  hospitalEntrySchema.omit({id: true}),
-]);;
+  healthCheckEntrySchema.omit({ id: true }),
+  occupationalHealthcareEntrySchema.omit({ id: true }),
+  hospitalEntrySchema.omit({ id: true }),
+]);
 
 export type Entry = z.infer<typeof entrySchema>;
-type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
-export type NewEntry = UnionOmit<Entry, 'id'>;
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+export type NewEntry = UnionOmit<Entry, "id">;
 export const patientSchema = z.object({
   id: z.string(),
   name: z.string().trim().min(1),
