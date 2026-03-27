@@ -4,7 +4,7 @@ import FemaleIcon from "@mui/icons-material/Female";
 import WorkIcon from "@mui/icons-material/Work";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { List, ListItem, Paper, Typography } from "@mui/material";
+import { List, ListItem, Paper, Typography, Button } from "@mui/material";
 import {
   Patient,
   Entry,
@@ -12,14 +12,29 @@ import {
   HospitalEntry,
   OccupationalHealthcareEntry,
   HealthCheckRating,
+  NewEntry,
 } from "../types";
 import patientService from "../services/patients";
 import diagnosesService from "../services/diagnoses";
 import { Diagnosis } from "../types";
+import AddEntryModal from "./AddEntryModal";
+import axios from "axios";
 
 const PatientPage = (props: { patientId: string }) => {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setError(undefined);
+  };
+
   useEffect(() => {
     const fetchPatient = async () => {
       const patient = await patientService.getById(props.patientId);
@@ -111,6 +126,38 @@ const PatientPage = (props: { patientId: string }) => {
     }
   };
 
+  const submitNewEntry = async (values: NewEntry) => {
+    try {
+      const newEntry = await patientService.addEntry(props.patientId, values);
+      setPatient({ ...patient, entries: [...patient.entries, newEntry] });
+      closeModal();
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        const data = e.response?.data;
+        if (data && typeof data === "string") {
+          setError(data);
+        } else if (
+          data &&
+          typeof data === "object" &&
+          "error" in data &&
+          Array.isArray(data.error)
+        ) {
+          const issues = (data as { error: Array<{ path?: (string | number)[]; message?: string }> }).error;
+          const message = issues
+            .map((i) => `${i.path?.join(".") ?? "field"}: ${i.message ?? "invalid value"}`)
+            .join("; ");
+          setError(message);
+        } else {
+          console.error("Request failed: ", e.response?.data);
+          setError("Request failed");
+        }
+      }
+      else {
+        console.error("Unknown error", e);
+        setError("Error adding entry");
+      }
+    }
+  };
   return (
     <div>
       <h2>
@@ -155,6 +202,15 @@ const PatientPage = (props: { patientId: string }) => {
           </ListItem>
         ))}
       </List>
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onClose={closeModal}
+        onSubmit={submitNewEntry}
+        error={error}
+      />
+      <Button variant="contained" color="primary" onClick={() => openModal()}>
+        Add New Entry
+      </Button>
     </div>
   );
 };
