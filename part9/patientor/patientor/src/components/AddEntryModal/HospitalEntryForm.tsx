@@ -1,13 +1,15 @@
 import { Button, Grid, TextField } from "@mui/material";
 import { useState } from "react";
-import { NewHospitalEntry } from "../../types";
+import { NewHospitalEntry, Diagnosis } from "../../types";
+import DiagnosisCodesSelect from "./DiagnosisCodesSelect";
 
 interface Props {
   onCancel: () => void;
   onSubmit: (values: NewHospitalEntry) => void;
+  diagnoses: Diagnosis[];
 }
 
-const HospitalEntryForm = ({ onCancel, onSubmit }: Props) => {
+const HospitalEntryForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
@@ -37,38 +39,51 @@ const HospitalEntryForm = ({ onCancel, onSubmit }: Props) => {
         <TextField
           label="Description"
           fullWidth
+          required
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          sx={{ mt: 1 }}
         />
         <TextField
           label="Date"
+          type="date"
           fullWidth
+          required
           value={date}
           onChange={(e) => setDate(e.target.value)}
+          sx={{ mt: 2 }}
+          InputLabelProps={{ shrink: true }}
         />
         <TextField
           label="Specialist"
           fullWidth
+          required
           value={specialist}
           onChange={(e) => setSpecialist(e.target.value)}
+          sx={{ mt: 2 }}
         />
-        <TextField
-          label="Diagnosis Codes"
-          fullWidth
-          value={diagnosisCodes.join(", ")}
-          onChange={(e) => setDiagnosisCodes(e.target.value.split(", "))}
+        <DiagnosisCodesSelect
+          diagnoses={diagnoses}
+          diagnosisCodes={diagnosisCodes}
+          setDiagnosisCodes={setDiagnosisCodes}
         />
         <TextField
           label="Discharge Date"
+          type="date"
           fullWidth
+          required
           value={dischargeDate}
           onChange={(e) => setDischargeDate(e.target.value)}
+          sx={{ mt: 2 }}
+          InputLabelProps={{ shrink: true }}
         />
         <TextField
           label="Discharge Criteria"
           fullWidth
+          required
           value={dischargeCriteria}
           onChange={(e) => setDischargeCriteria(e.target.value)}
+          sx={{ mt: 2 }}
         />
         <Grid>
           <Grid item>

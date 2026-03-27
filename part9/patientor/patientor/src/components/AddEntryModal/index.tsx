@@ -11,7 +11,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { useState } from "react";
-import { NewEntry } from "../../types";
+import { Diagnosis, NewEntry, EntryType } from "../../types";
 import HealthCheckEntryForm from "./HealthCheckEntryForm";
 import HospitalEntryForm from "./HospitalEntryForm";
 import OccupationalHealthcareEntryForm from "./OccupationalHealthcareEntryForm";
@@ -20,12 +20,19 @@ interface Props {
   modalOpen: boolean;
   onClose: () => void;
   onSubmit: (values: NewEntry) => void;
+  diagnoses: Diagnosis[];
   error?: string;
 }
 
-type EntryType = "HealthCheck" | "Hospital" | "OccupationalHealthcare";
+  
 
-const AddEntryModal = ({ modalOpen, onClose, onSubmit, error }: Props) => {
+const AddEntryModal = ({
+  modalOpen,
+  onClose,
+  onSubmit,
+  diagnoses,
+  error,
+}: Props) => {
   const [entryType, setEntryType] = useState<EntryType>("HealthCheck");
 
   const handleEntryTypeChange = (event: SelectChangeEvent) => {
@@ -54,15 +61,24 @@ const AddEntryModal = ({ modalOpen, onClose, onSubmit, error }: Props) => {
           </Select>
         </FormControl>
         {entryType === "HealthCheck" && (
-          <HealthCheckEntryForm onSubmit={onSubmit} onCancel={onClose} />
+          <HealthCheckEntryForm
+            onSubmit={onSubmit}
+            onCancel={onClose}
+            diagnoses={diagnoses}
+          />
         )}
         {entryType === "Hospital" && (
-          <HospitalEntryForm onSubmit={onSubmit} onCancel={onClose} />
+          <HospitalEntryForm
+            onSubmit={onSubmit}
+            onCancel={onClose}
+            diagnoses={diagnoses}
+          />
         )}
         {entryType === "OccupationalHealthcare" && (
           <OccupationalHealthcareEntryForm
             onSubmit={onSubmit}
             onCancel={onClose}
+            diagnoses={diagnoses}
           />
         )}
       </DialogContent>

@@ -206,6 +206,7 @@ const PatientPage = (props: { patientId: string }) => {
         modalOpen={modalOpen}
         onClose={closeModal}
         onSubmit={submitNewEntry}
+        diagnoses={diagnoses}
         error={error}
       />
       <Button variant="contained" color="primary" onClick={() => openModal()}>
